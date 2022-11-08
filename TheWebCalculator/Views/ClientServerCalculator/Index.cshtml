@@ -1,0 +1,109 @@
+﻿@{
+    Layout = "_Layout";
+}
+
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    ViewData["Title"] = "Client-server calculator";
+}
+
+<h1>Client-server calculator</h1>
+
+
+<div class="col-12 col-md-6">
+
+    <div class="form-floating " id="display">
+        <input type="text" value="0" class="form-control form-control-lg" onchange="adjastTextFontSize()" readonly id="input-display"/>
+        <label for="input-display" id="placeholder-display"></label>
+    </div>
+
+    <div class="table-responsive" id="math-panel">
+        <table class="table table-borderless">
+            <tbody>
+            <tr>
+                    <partial name="_ActionButton" model='new ActionButtonModel { ActionName = "appendNumberToMemory()", ActionLabel = "M+" }' />
+                <partial name="_ActionButton" model='new ActionButtonModel { ActionName = "subtractNumberToMemory()", ActionLabel = "M-" }'/>
+                <td>
+                    <div class="d-grid gap-2">
+                    </div>
+                </td>
+                <partial name="_ActionButton" model='new ActionButtonModel { ActionName = "cleanAll()", ActionLabel = "C" }'/>
+            </tr>
+
+            <tr>
+                    <partial name="_ActionButton" model='new ActionButtonModel { ActionName = "cleanMemory()", ActionLabel = "MC" }' />
+                    <partial name="_ActionButton" model='new ActionButtonModel { ActionName = "readNumberFromMemory()", ActionLabel = "MR" }' />
+                <td>
+                    <div class="d-grid gap-2">
+
+                    </div>
+                </td>
+                <partial name="_ActionButton" model='new ActionButtonModel { ActionName = "addDivisionOperation()", ActionLabel = "÷" }'/>
+            </tr>
+
+            <tr>
+            <partial name="_NumberButton" model="new NumberButtonModel { Digit = 7 }"/>
+            <partial name="_NumberButton" model="new NumberButtonModel { Digit = 8 }"/>
+            <partial name="_NumberButton" model="new NumberButtonModel { Digit = 9 }"/>
+            <partial name="_ActionButton" model='new ActionButtonModel { ActionName = "addMultiplicationOperation()", ActionLabel = "x" }'/>
+            <tr>
+                <partial name="_NumberButton" model="new NumberButtonModel { Digit = 4 }"/>
+                <partial name="_NumberButton" model="new NumberButtonModel { Digit = 5 }"/>
+                <partial name="_NumberButton" model="new NumberButtonModel { Digit = 6 }"/>
+                <partial name="_ActionButton" model='new ActionButtonModel { ActionName = "addSubtractionOperation()", ActionLabel = "-" }'/>
+            </tr>
+
+            <tr>
+                <partial name="_NumberButton" model="new NumberButtonModel { Digit = 1 }"/>
+                <partial name="_NumberButton" model="new NumberButtonModel { Digit = 2 }"/>
+                <partial name="_NumberButton" model="new NumberButtonModel { Digit = 3 }"/>
+                <partial name="_ActionButton" model='new ActionButtonModel { ActionName = "addAdditionOperation()", ActionLabel = "+" }'/>
+            </tr>
+
+            <tr>
+                <partial name="_NumberButton" model="new NumberButtonModel { Digit = 0 }"/>
+                <partial name="_ActionButton" model='new ActionButtonModel { ActionName = "addPointToDisplay()", ActionLabel = "." }'/>
+                <partial name="_ActionButton" model='new ActionButtonModel { ActionName = "showNegativeNumberOnDisplay()", ActionLabel = "+/-" }'/>
+                <partial name="_ActionButton" model='new ActionButtonModel { ActionName = "addCalculateOperation()", ActionLabel = "=" }'/>
+            </tr>
+
+            </tbody>
+        </table>
+        
+        <input value="enable" type="hidden" id="calculator-state-id"/>
+        <input value="0" type="hidden" id="memory-storage-id"/>
+    </div>
+</div>
+
+
+@section Scripts
+{
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/js/text-autosizer-for-display.js" asp-append-version="true"></script>
+    <script src="~/js/trigger-item-event-onchange.js" asp-append-version="true"></script>
+    <script src="~/js/operation-mapper.js" asp-append-version="true"></script>
+    <script src="~/js/display-input.js" asp-append-version="true"></script>
+    <script src="~/js/display-placeholder.js" asp-append-version="true"></script>
+    <script src="~/js/show-result-or-error.js" asp-append-version="true"></script>
+    <script src="~/js/calculator-state.js" asp-append-version="true"></script>
+    <script src="~/js/memory-storage.js" asp-append-version="true"></script>
+
+    <script src="~/js/add-digit-to-display.js" asp-append-version="true"></script>
+    <script src="~/js/add-point-to-display.js" asp-append-version="true"></script>
+    <script src="~/js/move-number-to-negative.js" asp-append-version="true"></script>
+    <script src="~/js/addition-is-pressed.js" asp-append-version="true"></script>
+    <script src="~/js/subtraction-is-pressed.js" asp-append-version="true"></script>
+    <script src="~/js/multiplication-is-pressed.js" asp-append-version="true"></script>
+    <script src="~/js/division-is-pressed.js" asp-append-version="true"></script>
+    <script src="~/js/calculate.js" asp-append-version="true"></script>
+    <script src="~/js/memory-subtract-is-pressed.js" asp-append-version="true"></script>
+    <script src="~/js/memory-append-is-pressed.js" asp-append-version="true"></script>
+    <script src="~/js/read-from-memory-is-pressed.js" asp-append-version="true"></script>
+    <script src="~/js/clean-memory-is-pressed.js" asp-append-version="true"></script>
+
+
+    <script src="~/js/clean-all.js" asp-append-version="true"></script>
+
+}

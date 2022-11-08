@@ -1,0 +1,119 @@
+﻿@{
+    Layout = "_Layout";
+}
+
+@using TheWebCalculator.Core
+@using System.ComponentModel.DataAnnotations
+@using System.Globalization
+@using System.Text
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model CalculatorModel
+
+@{
+    ViewData["Title"] = "Server side calculator";
+}
+
+<h1>Server side calculator</h1>
+
+
+<div class="col-12 col-md-6">
+    @{
+        var displayText = "";
+        var placeholderText = "";
+        if (string.IsNullOrEmpty(Model.DisplayMessage))
+        {
+            var placeholderTextFormat = "##,###.############################";
+
+            var sb = new StringBuilder("##,##0.");
+            sb.Append(string.Concat(Enumerable.Repeat("0", Model.NumberOfInitiatingFractionalZeros)));
+            sb.Append(string.Concat(Enumerable.Repeat("#", 28 - Model.NumberOfInitiatingFractionalZeros)));
+            var displayTextFormat = sb.ToString();
+
+            placeholderText = Model.PreviousNumber.ToString(placeholderTextFormat, CultureInfo.InvariantCulture);
+
+            placeholderText = Model.Operation switch 
+            {
+                MathOperation.Addition => $"{placeholderText} +",
+                MathOperation.Subtraction => $"{placeholderText} -",
+                MathOperation.Multiplication => $"{placeholderText} x",
+                MathOperation.Division => $"{placeholderText} ÷",
+                _ => placeholderText
+                };
+
+            displayText = Model.PointState.Equals(PointState.Exist)
+                          && Model.CurrentNumber % 1 == 0
+                          && Model.NumberOfInitiatingFractionalZeros == 0
+                ? $"{Model.CurrentNumber.ToString(displayTextFormat, CultureInfo.InvariantCulture)}."
+                : Model.CurrentNumber.ToString(displayTextFormat, CultureInfo.InvariantCulture);
+        }
+        else
+        {
+            displayText = Model.DisplayMessage;
+        }
+
+    }
+    <div class="form-floating " id="display">
+        <input type="text" value="@displayText" class="form-control form-control-lg" readonly id="input-display"/>
+        <label for="input-display">@placeholderText</label>
+    </div>
+
+    <div class="table-responsive" id="math-panel">
+        <table class="table table-borderless">
+            <tbody>
+            <tr>
+                <partial name="_ActionButton" model='new ActionButtonModel { ActionName = "AddCurrentNumberToMemory", ActionLabel = "M+", CalculatorModel = Model }'/>
+                <partial name="_ActionButton" model='new ActionButtonModel { ActionName = "SubtractNumberFromMemory", ActionLabel = "M-", CalculatorModel = Model }'/>
+                <td>
+                    <div class="d-grid gap-2">
+                    </div>
+                </td>
+                <partial name="_ActionButton" model='new ActionButtonModel { ActionName = "CleanAll", ActionLabel = "C", CalculatorModel = Model }'/>
+            </tr>
+
+            <tr>
+                <partial name="_ActionButton" model='new ActionButtonModel { ActionName = "CleanMemory", ActionLabel = "MC", CalculatorModel = Model }'/>
+                <partial name="_ActionButton" model='new ActionButtonModel { ActionName = "ReadFromMemory", ActionLabel = "MR", CalculatorModel = Model }'/>
+                <td>
+                    <div class="d-grid gap-2">
+                    </div>
+                </td>
+                <partial name="_ActionButton" model='new ActionButtonModel { ActionName = "AddDivisionOperation", ActionLabel = "÷", CalculatorModel = Model }'/>
+            </tr>
+
+            <tr>
+                <partial name="_NumberButton" model="new NumberButtonModel { Digit = 7, CalculatorModel = Model }"/>
+                <partial name="_NumberButton" model="new NumberButtonModel { Digit = 8, CalculatorModel = Model }"/>
+                <partial name="_NumberButton" model="new NumberButtonModel { Digit = 9, CalculatorModel = Model }"/>
+                <partial name="_ActionButton" model='new ActionButtonModel { ActionName = "AddMultiplicationOperation", ActionLabel = "x", CalculatorModel = Model }'/>
+            <tr>
+                <partial name="_NumberButton" model="new NumberButtonModel { Digit = 4, CalculatorModel = Model }"/>
+                <partial name="_NumberButton" model="new NumberButtonModel { Digit = 5, CalculatorModel = Model }"/>
+                <partial name="_NumberButton" model="new NumberButtonModel { Digit = 6, CalculatorModel = Model }"/>
+                <partial name="_ActionButton" model='new ActionButtonModel { ActionName = "AddSubtractionOperation", ActionLabel = "-", CalculatorModel = Model }'/>
+            </tr>
+
+            <tr>
+                <partial name="_NumberButton" model="new NumberButtonModel { Digit = 1, CalculatorModel = Model }"/>
+                <partial name="_NumberButton" model="new NumberButtonModel { Digit = 2, CalculatorModel = Model }"/>
+                <partial name="_NumberButton" model="new NumberButtonModel { Digit = 3, CalculatorModel = Model }"/>
+                <partial name="_ActionButton" model='new ActionButtonModel { ActionName = "AddAdditionalOperation", ActionLabel = "+", CalculatorModel = Model }'/>
+            </tr>
+
+            <tr>
+                <partial name="_NumberButton" model="new NumberButtonModel { Digit = 0, CalculatorModel = Model }"/>
+                <partial name="_ActionButton" model='new ActionButtonModel { ActionName = "AddPoint", ActionLabel = ".", CalculatorModel = Model }'/>
+                <partial name="_ActionButton" model='new ActionButtonModel { ActionName = "InvertSign", ActionLabel = "+/-", CalculatorModel = Model }'/>
+                <partial name="_ActionButton" model='new ActionButtonModel { ActionName = "CalculateExpression", ActionLabel = "=", CalculatorModel = Model }'/>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+@section Scripts
+{
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/js/text-autosizer-for-display.js" asp-append-version="true"></script>
+}

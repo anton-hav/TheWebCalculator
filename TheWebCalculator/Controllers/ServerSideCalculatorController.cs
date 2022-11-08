@@ -30,7 +30,7 @@ public class ServerSideCalculatorController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> AddDigitToNumber(byte digit,
+    public IActionResult AddDigitToNumber(byte digit,
         CalculatorModel model)
     {
         try
@@ -57,7 +57,7 @@ public class ServerSideCalculatorController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> InvertSign(CalculatorModel model)
+    public IActionResult InvertSign(CalculatorModel model)
     {
         try
         {
@@ -82,7 +82,7 @@ public class ServerSideCalculatorController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> AddPoint(CalculatorModel model)
+    public IActionResult AddPoint(CalculatorModel model)
     {
         try
         {
@@ -107,7 +107,7 @@ public class ServerSideCalculatorController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> AddAdditionalOperation(CalculatorModel model)
+    public IActionResult AddAdditionalOperation(CalculatorModel model)
     {
         try
         {
@@ -153,7 +153,7 @@ public class ServerSideCalculatorController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> AddSubtractionOperation(CalculatorModel model)
+    public IActionResult AddSubtractionOperation(CalculatorModel model)
     {
         try
         {
@@ -199,7 +199,7 @@ public class ServerSideCalculatorController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> AddMultiplicationOperation(CalculatorModel model)
+    public IActionResult AddMultiplicationOperation(CalculatorModel model)
     {
         try
         {
@@ -245,7 +245,7 @@ public class ServerSideCalculatorController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> AddDivisionOperation(CalculatorModel model)
+    public IActionResult AddDivisionOperation(CalculatorModel model)
     {
         try
         {
@@ -292,7 +292,7 @@ public class ServerSideCalculatorController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> CalculateExpression(CalculatorModel model)
+    public IActionResult CalculateExpression(CalculatorModel model)
     {
         try
         {
@@ -338,7 +338,7 @@ public class ServerSideCalculatorController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> CleanAll()
+    public IActionResult CleanAll()
     {
         try
         {
@@ -361,7 +361,7 @@ public class ServerSideCalculatorController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> AddCurrentNumberToMemory(CalculatorModel model)
+    public IActionResult AddCurrentNumberToMemory(CalculatorModel model)
     {
         try
         {
@@ -395,7 +395,7 @@ public class ServerSideCalculatorController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> SubtractNumberFromMemory(CalculatorModel model)
+    public IActionResult SubtractNumberFromMemory(CalculatorModel model)
     {
         try
         {
@@ -429,7 +429,7 @@ public class ServerSideCalculatorController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> CleanMemory(CalculatorModel model)
+    public IActionResult CleanMemory(CalculatorModel model)
     {
         try
         {
@@ -463,7 +463,7 @@ public class ServerSideCalculatorController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> ReadFromMemory(CalculatorModel model)
+    public IActionResult ReadFromMemory(CalculatorModel model)
     {
         try
         {

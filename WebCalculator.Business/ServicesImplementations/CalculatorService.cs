@@ -1,4 +1,5 @@
-﻿using TheWebCalculator.Core;
+﻿using System.Globalization;
+using TheWebCalculator.Core;
 using TheWebCalculator.Core.Abstractions;
 using TheWebCalculator.Core.DataTransferObjects;
 
@@ -6,19 +7,26 @@ namespace WebCalculator.Business.ServicesImplementations;
 
 public class CalculatorService : ICalculatorService
 {
-    public decimal AddDigitToNumber(byte digit, decimal number, bool isPointExist)
+    public MathExpressionDto AddDigitToNumber(byte digit, MathExpressionDto dto)
     {
+        if (dto.Operation.Equals(MathOperation.Result))
+        {
+            dto.PreviousNumber = 0;
+            dto.CurrentNumber = 0;
+            dto.Operation = MathOperation.None;
+        }
+
         var maxValue = (decimal)Math.Pow(10, 27);
 
-        if (number >= maxValue || number <= -maxValue) return number;
+        if (dto.CurrentNumber >= maxValue || dto.CurrentNumber <= -maxValue) return dto;
 
-        if (isPointExist)
+        if (dto.IsPointExist)
         {
-            var fractionalPart = number % 1;
+            var fractionalPart = dto.CurrentNumber % 1;
 
             if (fractionalPart == 0)
             {
-                number = number + (decimal)digit / 10;
+                dto.CurrentNumber = dto.CurrentNumber + (decimal)digit / 10;
             }
             else
             {
@@ -26,35 +34,47 @@ public class CalculatorService : ICalculatorService
                 var fractionPartScale = (byte)((decimal.GetBits(fractionalPart)[3] >> 16) & 0x7F);
                 fractionPartScale++;
 
-                number = number < 0
-                    ? number - (decimal)(digit * Math.Pow(10, -fractionPartScale))
-                    : number + (decimal)(digit * Math.Pow(10, -fractionPartScale));
+                dto.CurrentNumber = dto.CurrentNumber < 0
+                    ? dto.CurrentNumber - (decimal)(digit * Math.Pow(10, -fractionPartScale))
+                    : dto.CurrentNumber + (decimal)(digit * Math.Pow(10, -fractionPartScale));
             }
         }
         else
         {
-            number = number < 0
-                ? number * 10 - digit
-                : number * 10 + digit;
+            dto.CurrentNumber = dto.CurrentNumber < 0
+                ? dto.CurrentNumber * 10 - digit
+                : dto.CurrentNumber * 10 + digit;
         }
 
-        return number;
+        return dto;
     }
 
-    public decimal InvertNumberSign(decimal number)
+    public MathExpressionDto InvertNumberSign(MathExpressionDto dto)
     {
+        if (dto.Operation.Equals(MathOperation.Result))
+        {
+            dto.PreviousNumber = 0;
+            dto.Operation = MathOperation.None;
+        }
         //todo: perhaps a multiplication of the number and (-1) is better way?
-        var parts = decimal.GetBits(number);
+        var parts = decimal.GetBits(dto.CurrentNumber);
         var sign = (parts[3] & 0x80000000) != 0;
         sign = !sign;
         var scale = (byte)((parts[3] >> 16) & 0x7F);
-        number = new decimal(parts[0], parts[1], parts[2], sign, scale);
+        dto.CurrentNumber = new decimal(parts[0], parts[1], parts[2], sign, scale);
 
-        return number;
+        return dto;
     }
 
     public MathExpressionDto AddPoint(MathExpressionDto dto)
     {
+        if (dto.Operation.Equals(MathOperation.Result))
+        {
+            dto.PreviousNumber = 0;
+            dto.CurrentNumber = 0;
+            dto.Operation = MathOperation.None;
+        }
+
         if (!dto.IsPointExist) dto.IsPointExist = true;
         return dto;
     }
@@ -65,6 +85,7 @@ public class CalculatorService : ICalculatorService
         dto.PreviousNumber = Calculate(dto);
         dto.CurrentNumber = 0;
         dto.Operation = MathOperation.Addition;
+        dto.IsPointExist = false;
 
         return dto;
     }
@@ -74,6 +95,7 @@ public class CalculatorService : ICalculatorService
         dto.PreviousNumber = Calculate(dto);
         dto.CurrentNumber = 0;
         dto.Operation = MathOperation.Subtraction;
+        dto.IsPointExist = false;
 
         return dto;
     }
@@ -83,6 +105,7 @@ public class CalculatorService : ICalculatorService
         dto.PreviousNumber = Calculate(dto);
         dto.CurrentNumber = 0;
         dto.Operation = MathOperation.Multiplication;
+        dto.IsPointExist = false;
 
         return dto;
     }
@@ -92,35 +115,43 @@ public class CalculatorService : ICalculatorService
         dto.PreviousNumber = Calculate(dto);
         dto.CurrentNumber = 0;
         dto.Operation = MathOperation.Division;
+        dto.IsPointExist = false;
 
         return dto;
     }
 
     public MathExpressionDto CalculateExpression(MathExpressionDto dto)
     {
+        var result = Calculate(dto);
         return new MathExpressionDto
         {
             PreviousNumber = dto.CurrentNumber,
-            CurrentNumber = Calculate(dto),
+            CurrentNumber = result,
             Operation = MathOperation.Result,
-            Memory = dto.Memory
+            Memory = dto.Memory,
+            DisplayMessage = result
+                .ToString("##,##0.############################", CultureInfo.InvariantCulture)
         };
     }
 
-    public decimal AddNumberToMemory(MathExpressionDto dto)
+    public MathExpressionDto AddNumberToMemory(MathExpressionDto dto)
     {
         if (decimal.MaxValue - dto.CurrentNumber <= dto.Memory)
             throw new OverflowException("Memory is overflow");
 
-        return dto.Memory + dto.CurrentNumber;
+        dto.Memory += dto.CurrentNumber;
+
+        return dto;
     }
 
-    public decimal SubtractNumberFromMemory(MathExpressionDto dto)
+    public MathExpressionDto SubtractNumberFromMemory(MathExpressionDto dto)
     {
         if (decimal.MinValue + dto.CurrentNumber >= dto.Memory)
             throw new OverflowException("Memory is overflow");
 
-        return dto.Memory + dto.CurrentNumber;
+        dto.Memory -= dto.CurrentNumber;
+
+        return dto;
     }
 
     public MathExpressionDto MemoryClean(MathExpressionDto dto)
@@ -129,13 +160,15 @@ public class CalculatorService : ICalculatorService
         return dto;
     }
 
-    public decimal MemoryRead(MathExpressionDto dto)
+    public MathExpressionDto MemoryRead(MathExpressionDto dto)
     {
         if (dto.Memory >= decimal.MaxValue
             && dto.Memory <= decimal.MinValue)
             throw new OverflowException("Memory is overflow");
 
-        return dto.Memory;
+        dto.CurrentNumber = dto.Memory;
+
+        return dto;
     }
 
     private decimal Calculate(MathExpressionDto dto)

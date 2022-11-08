@@ -1,6 +1,11 @@
 ﻿async function addDigitToDisplayAsync(digit) {
-    
+    let isStateValid = await isCalculatorStateIsEnabledAsync();
     let value = await getValueFromInputDisplayAsync();
+    if (!isStateValid) {
+        value = "0";
+        await setEnableToCalculatorStateAsync();
+    }
+    
     let newValue;
     if (value == "0") {
         newValue = digit;

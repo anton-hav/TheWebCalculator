@@ -22,8 +22,8 @@
         <table class="table table-borderless">
             <tbody>
             <tr>
-                <partial name="_ActionButton" model='new ActionButtonModel { ActionName = "", ActionLabel = "M+" }'/>
-                <partial name="_ActionButton" model='new ActionButtonModel { ActionName = "", ActionLabel = "M-" }'/>
+                    <partial name="_ActionButton" model='new ActionButtonModel { ActionName = "appendNumberToMemory()", ActionLabel = "M+" }' />
+                <partial name="_ActionButton" model='new ActionButtonModel { ActionName = "subtractNumberToMemory()", ActionLabel = "M-" }'/>
                 <td>
                     <div class="d-grid gap-2">
                     </div>
@@ -32,8 +32,8 @@
             </tr>
 
             <tr>
-                <partial name="_ActionButton" model='new ActionButtonModel { ActionName = "", ActionLabel = "MC" }'/>
-                <partial name="_ActionButton" model='new ActionButtonModel { ActionName = "", ActionLabel = "MR" }'/>
+                    <partial name="_ActionButton" model='new ActionButtonModel { ActionName = "cleanMemory()", ActionLabel = "MC" }' />
+                    <partial name="_ActionButton" model='new ActionButtonModel { ActionName = "readNumberFromMemory()", ActionLabel = "MR" }' />
                 <td>
                     <div class="d-grid gap-2">
 
@@ -70,6 +70,9 @@
 
             </tbody>
         </table>
+        
+        <input value="enable" type="hidden" id="calculator-state-id"/>
+        <input value="0" type="hidden" id="memory-storage-id"/>
     </div>
 </div>
 
@@ -84,6 +87,8 @@
     <script src="~/js/display-input.js" asp-append-version="true"></script>
     <script src="~/js/display-placeholder.js" asp-append-version="true"></script>
     <script src="~/js/show-result-or-error.js" asp-append-version="true"></script>
+    <script src="~/js/calculator-state.js" asp-append-version="true"></script>
+    <script src="~/js/memory-storage.js" asp-append-version="true"></script>
 
     <script src="~/js/add-digit-to-display.js" asp-append-version="true"></script>
     <script src="~/js/add-point-to-display.js" asp-append-version="true"></script>
@@ -93,6 +98,12 @@
     <script src="~/js/multiplication-is-pressed.js" asp-append-version="true"></script>
     <script src="~/js/division-is-pressed.js" asp-append-version="true"></script>
     <script src="~/js/calculate.js" asp-append-version="true"></script>
+    <script src="~/js/memory-subtract-is-pressed.js" asp-append-version="true"></script>
+    <script src="~/js/memory-append-is-pressed.js" asp-append-version="true"></script>
+    <script src="~/js/read-from-memory-is-pressed.js" asp-append-version="true"></script>
+    <script src="~/js/clean-memory-is-pressed.js" asp-append-version="true"></script>
+
+
     <script src="~/js/clean-all.js" asp-append-version="true"></script>
 
 }

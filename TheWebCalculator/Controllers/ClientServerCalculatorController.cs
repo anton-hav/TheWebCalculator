@@ -226,10 +226,14 @@ namespace TheWebCalculator.Controllers
                     Operation = operation,
                 };
 
-                dto.PreviousNumber = _calculatorService
-                    .CalculateExpression(dto).CurrentNumber;
+                //dto.PreviousNumber = _calculatorService
+                //    .CalculateExpression(dto).CurrentNumber;
 
-                dto.DisplayMessage = dto.PreviousNumber
+
+                dto = _calculatorService
+                    .CalculateExpression(dto);
+
+                dto.DisplayMessage = dto.CurrentNumber
                     .ToString("##,##0.############################", CultureInfo.InvariantCulture);
 
                 return Ok(dto);
@@ -261,6 +265,141 @@ namespace TheWebCalculator.Controllers
                 return StatusCode(500);
             }
 
+        }
+
+
+        [HttpGet]
+        public IActionResult AddCurrentNumberToMemory([FromQuery] decimal currentNumber, decimal memory)
+        {
+            try
+            {
+                var dto = new MathExpressionDto()
+                {
+                    CurrentNumber = currentNumber,
+                    Memory = memory,
+                };
+                var newDto = _calculatorService.AddNumberToMemory(dto);
+
+                return Ok(newDto);
+            }
+            catch (OverflowException)
+            {
+                var dto = new MathExpressionDto
+                {
+                    DisplayMessage = "Overflow"
+                };
+                return Ok(dto);
+            }
+            catch (ArgumentException ex)
+            {
+                Log.Error($"{ex.Message}. {Environment.NewLine} {ex.StackTrace}");
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"{ex.Message}. {Environment.NewLine} {ex.StackTrace}");
+                return StatusCode(500);
+            }
+        }
+
+        [HttpGet]
+        public IActionResult SubtractNumberFromMemory([FromQuery] decimal currentNumber, decimal memory)
+        {
+            try
+            {
+                var dto = new MathExpressionDto()
+                {
+                    CurrentNumber = currentNumber,
+                    Memory = memory,
+                };
+                var newDto = _calculatorService.SubtractNumberFromMemory(dto);
+
+                return Ok(newDto);
+            }
+            catch (OverflowException)
+            {
+                var dto = new MathExpressionDto
+                {
+                    DisplayMessage = "Overflow"
+                };
+                return Ok(dto);
+            }
+            catch (ArgumentException ex)
+            {
+                Log.Error($"{ex.Message}. {Environment.NewLine} {ex.StackTrace}");
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"{ex.Message}. {Environment.NewLine} {ex.StackTrace}");
+                return StatusCode(500);
+            }
+        }
+
+        [HttpGet]
+        public IActionResult CleanMemory([FromQuery] decimal memory)
+        {
+            try
+            {
+                var dto = new MathExpressionDto()
+                {
+                    Memory = memory,
+                };
+                var newDto = _calculatorService.MemoryClean(dto);
+
+                return Ok(newDto);
+            }
+            catch (OverflowException)
+            {
+                var dto = new MathExpressionDto
+                {
+                    DisplayMessage = "Overflow"
+                };
+                return Ok(dto);
+            }
+            catch (ArgumentException ex)
+            {
+                Log.Error($"{ex.Message}. {Environment.NewLine} {ex.StackTrace}");
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"{ex.Message}. {Environment.NewLine} {ex.StackTrace}");
+                return StatusCode(500);
+            }
+        }
+
+        [HttpGet]
+        public IActionResult ReadFromMemory([FromQuery] decimal memory)
+        {
+            try
+            {
+                var dto = new MathExpressionDto()
+                {
+                    Memory = memory,
+                };
+                var newDto = _calculatorService.MemoryRead(dto);
+
+                return Ok(newDto);
+            }
+            catch (OverflowException)
+            {
+                var dto = new MathExpressionDto
+                {
+                    DisplayMessage = "Overflow"
+                };
+                return Ok(dto);
+            }
+            catch (ArgumentException ex)
+            {
+                Log.Error($"{ex.Message}. {Environment.NewLine} {ex.StackTrace}");
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"{ex.Message}. {Environment.NewLine} {ex.StackTrace}");
+                return StatusCode(500);
+            }
         }
     }
 }

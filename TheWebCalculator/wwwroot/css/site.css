@@ -16,3 +16,24 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+input {
+    text-align: right;
+}
+
+label {
+    text-align: end;
+    width: 100%;
+}
+
+
+.table {
+    border: 0px;
+    table-layout: fixed;
+    width: 100%;
+}
+
+input[type="text"] {
+    font-size: 40px;
+    min-height: 60px;
+}

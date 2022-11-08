@@ -1,0 +1,12 @@
+﻿@model NumberButtonModel
+
+<td>
+    <div class="d-grid gap-2">
+        <a type="button" class="btn btn-outline-dark btn-lg"
+           asp-controller="ServerSideCalculator"
+           asp-action="AddNumber"
+           asp-all-route-data="@Model.ToDictionary()">
+            @Model.Digit
+        </a>
+    </div>
+</td>

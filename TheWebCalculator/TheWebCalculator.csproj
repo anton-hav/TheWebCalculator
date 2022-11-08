@@ -6,4 +6,21 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="12.0.0" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
+    <PackageReference Include="Serilog.AspNetCore" Version="6.0.1" />
+    <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TheWebCaclulator.Core\TheWebCalculator.Core.csproj" />
+    <ProjectReference Include="..\WebCalculator.Business\WebCalculator.Business.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="MappingProfiles\" />
+    <Folder Include="Views\ClientCalculator\" />
+  </ItemGroup>
+
 </Project>

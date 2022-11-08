@@ -30,7 +30,7 @@ public class ServerSideCalculatorController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> AddNumber(byte digit,
+    public async Task<IActionResult> AddDigitToNumber(byte digit,
         CalculatorModel model)
     {
         try
@@ -40,11 +40,12 @@ public class ServerSideCalculatorController : Controller
             if (dto.Operation.Equals(MathOperation.Result))
             {
                 dto.PreviousNumber = 0;
+                dto.CurrentNumber = 0;
                 dto.Operation = MathOperation.None;
             }
 
             dto.CurrentNumber = _calculatorService.AddDigitToNumber(digit,
-                model.CurrentNumber, model.IsPointExist);
+                dto.CurrentNumber, dto.IsPointExist);
 
             return RedirectToAction("Index",
                 "ServerSideCalculator",
@@ -70,7 +71,6 @@ public class ServerSideCalculatorController : Controller
             var dto = _mapper.Map<MathExpressionDto>(model);
             if (dto.Operation.Equals(MathOperation.Result))
             {
-                dto.CurrentNumber = dto.PreviousNumber;
                 dto.PreviousNumber = 0;
                 dto.Operation = MathOperation.None;
             }
@@ -99,6 +99,13 @@ public class ServerSideCalculatorController : Controller
         try
         {
             var dto = _mapper.Map<MathExpressionDto>(model);
+
+            if (dto.Operation.Equals(MathOperation.Result))
+            {
+                dto.PreviousNumber = 0;
+                dto.CurrentNumber = 0;
+                dto.Operation = MathOperation.None;
+            }
 
             var newDto = _calculatorService.AddPoint(dto);
 

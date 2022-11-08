@@ -102,7 +102,7 @@ public class CalculatorService : ICalculatorService
         {
             PreviousNumber = dto.CurrentNumber,
             CurrentNumber = Calculate(dto),
-            Operation = MathOperation.None,
+            Operation = MathOperation.Result,
             Memory = dto.Memory
         };
     }

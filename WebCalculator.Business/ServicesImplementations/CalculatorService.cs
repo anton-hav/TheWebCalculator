@@ -20,13 +20,21 @@ public class CalculatorService : ICalculatorService
 
         if (dto.CurrentNumber >= maxValue || dto.CurrentNumber <= -maxValue) return dto;
 
-        if (dto.IsPointExist)
+        if (dto.PointState.Equals(PointState.Exist))
         {
             var fractionalPart = dto.CurrentNumber % 1;
 
             if (fractionalPart == 0)
             {
-                dto.CurrentNumber = dto.CurrentNumber + (decimal)digit / 10;
+                
+                if (digit == 0)
+                {
+                    dto.NumberOfInitiatingFractionalZeros += 1;
+                }
+                else
+                {
+                    dto.CurrentNumber += (decimal)(digit * Math.Pow(10, - (dto.NumberOfInitiatingFractionalZeros+1)));
+                }
             }
             else
             {
@@ -56,7 +64,7 @@ public class CalculatorService : ICalculatorService
             dto.PreviousNumber = 0;
             dto.Operation = MathOperation.None;
         }
-        //todo: perhaps a multiplication of the number and (-1) is better way?
+        //todo: perhaps a multiplication of the number and (-1) or to use (-number) is better way?
         var parts = decimal.GetBits(dto.CurrentNumber);
         var sign = (parts[3] & 0x80000000) != 0;
         sign = !sign;
@@ -75,7 +83,7 @@ public class CalculatorService : ICalculatorService
             dto.Operation = MathOperation.None;
         }
 
-        if (!dto.IsPointExist) dto.IsPointExist = true;
+        if (!dto.PointState.Equals(PointState.Exist)) dto.PointState = PointState.Exist;
         return dto;
     }
 
@@ -85,7 +93,8 @@ public class CalculatorService : ICalculatorService
         dto.PreviousNumber = Calculate(dto);
         dto.CurrentNumber = 0;
         dto.Operation = MathOperation.Addition;
-        dto.IsPointExist = false;
+        dto.PointState = PointState.None;
+        dto.NumberOfInitiatingFractionalZeros = 0;
 
         return dto;
     }
@@ -95,7 +104,8 @@ public class CalculatorService : ICalculatorService
         dto.PreviousNumber = Calculate(dto);
         dto.CurrentNumber = 0;
         dto.Operation = MathOperation.Subtraction;
-        dto.IsPointExist = false;
+        dto.PointState = PointState.None;
+        dto.NumberOfInitiatingFractionalZeros = 0;
 
         return dto;
     }
@@ -105,7 +115,8 @@ public class CalculatorService : ICalculatorService
         dto.PreviousNumber = Calculate(dto);
         dto.CurrentNumber = 0;
         dto.Operation = MathOperation.Multiplication;
-        dto.IsPointExist = false;
+        dto.PointState = PointState.None;
+        dto.NumberOfInitiatingFractionalZeros = 0;
 
         return dto;
     }
@@ -115,7 +126,8 @@ public class CalculatorService : ICalculatorService
         dto.PreviousNumber = Calculate(dto);
         dto.CurrentNumber = 0;
         dto.Operation = MathOperation.Division;
-        dto.IsPointExist = false;
+        dto.PointState = PointState.None;
+        dto.NumberOfInitiatingFractionalZeros = 0;
 
         return dto;
     }
@@ -167,6 +179,7 @@ public class CalculatorService : ICalculatorService
             throw new OverflowException("Memory is overflow");
 
         dto.CurrentNumber = dto.Memory;
+        dto.NumberOfInitiatingFractionalZeros = 0;
 
         return dto;
     }

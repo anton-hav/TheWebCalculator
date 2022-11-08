@@ -5,6 +5,7 @@
 @using TheWebCalculator.Core
 @using System.ComponentModel.DataAnnotations
 @using System.Globalization
+@using System.Text
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @model CalculatorModel
 
@@ -22,24 +23,29 @@
         if (string.IsNullOrEmpty(Model.DisplayMessage))
         {
             var placeholderTextFormat = "##,###.############################";
-            var displayTextFormat = "##,##0.############################";
+
+            var sb = new StringBuilder("##,##0.");
+            sb.Append(string.Concat(Enumerable.Repeat("0", Model.NumberOfInitiatingFractionalZeros)));
+            sb.Append(string.Concat(Enumerable.Repeat("#", 28 - Model.NumberOfInitiatingFractionalZeros)));
+            var displayTextFormat = sb.ToString();
+
+            placeholderText = Model.PreviousNumber.ToString(placeholderTextFormat, CultureInfo.InvariantCulture);
 
             placeholderText = Model.Operation switch 
             {
-                MathOperation.Addition => $"{Model.PreviousNumber.ToString(placeholderTextFormat, CultureInfo.InvariantCulture)} +",
-                MathOperation.Subtraction => $"{Model.PreviousNumber.ToString(placeholderTextFormat, CultureInfo.InvariantCulture)} -",
-                MathOperation.Multiplication => $"{Model.PreviousNumber.ToString(placeholderTextFormat, CultureInfo.InvariantCulture)} x",
-                MathOperation.Division => $"{Model.PreviousNumber.ToString(placeholderTextFormat, CultureInfo.InvariantCulture)} ÷",
-                _ => Model.PreviousNumber.ToString(placeholderTextFormat, CultureInfo.InvariantCulture)
+                MathOperation.Addition => $"{placeholderText} +",
+                MathOperation.Subtraction => $"{placeholderText} -",
+                MathOperation.Multiplication => $"{placeholderText} x",
+                MathOperation.Division => $"{placeholderText} ÷",
+                _ => placeholderText
                 };
 
-            displayText = Model.IsPointExist
+            displayText = Model.PointState.Equals(PointState.Exist)
                           && Model.CurrentNumber % 1 == 0
+                          && Model.NumberOfInitiatingFractionalZeros == 0
                 ? $"{Model.CurrentNumber.ToString(displayTextFormat, CultureInfo.InvariantCulture)}."
                 : Model.CurrentNumber.ToString(displayTextFormat, CultureInfo.InvariantCulture);
         }
-
-
         else
         {
             displayText = Model.DisplayMessage;

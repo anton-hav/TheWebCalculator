@@ -1,0 +1,7 @@
+﻿@model ActionButtonModel
+
+<td>
+    <div class="d-grid gap-2">
+        <button type="button" class="btn btn-outline-dark btn-lg" onclick="@Model.ActionName" id="action-button-@Model.ActionName">@Model.ActionLabel</button>
+    </div>
+</td>
